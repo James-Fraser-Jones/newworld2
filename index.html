@@ -6,13 +6,32 @@
     <body>
         <h1>New World!</h1>
 
+        <!-- websocket testing ui -->
         <input id="chkConnect" type="checkbox" onclick='toggleConnection();' checked>Connect</input>
+        <br/>
         <input id="txtSend"></input>
         <button id="btnSend" onclick='sendMessage();'>Send</button>
         <br/><br/>
         <button id="btnSendJSON" onclick='sendJSON();'>Send JSON</button>
+        <br/><br/>
 
+        <!-- react app entry point -->
+        <div id="newworld_entry"></div>
+
+        <!-- socket.io script -->
         <script src="/socket.io/socket.io.js"></script>
+
+        <!-- react scripts -->
+        <script src="/content/react_library/react_16.5.2/react.development.js"></script>
+        <script src="/content/react_library/react_16.5.2/react-dom.development.js"></script>
+        <!-- <script src="/content/react_library/react_16.5.2/react.production.min.js"></script>
+        <script src="/content/react_library/react_16.5.2/react-dom.production.min.js"></script> -->
+
+        <!-- newworld app script -->
         <script src="/content/index.js"></script>
+
+        <!-- run this command before editing src/index.js
+        npx babel --watch src --out-dir content --presets react-app/prod
+        -->
     </body>
 </html>

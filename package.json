@@ -9,7 +9,19 @@
   "author": "Smudge",
   "license": "ISC",
   "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-react-app": "^3.1.2",
     "express": "^4.16.4",
     "socket.io": "^2.1.1"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smudgecat123/newworld2.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/smudgecat123/newworld2/issues"
+  },
+  "homepage": "https://github.com/smudgecat123/newworld2#readme"
 }
