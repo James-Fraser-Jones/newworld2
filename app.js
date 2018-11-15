@@ -14,13 +14,17 @@ app.get('/', function(req, res, next) {
 });
 
 io.on('connection', function(socket){
-  console.log('a user connected');
+  console.log('user connected');
   socket.on('disconnect', function(){
     console.log('user disconnected');
   });
-  socket.on('join', function(data) {
-    console.log(data);
-    socket.emit('messages', 'Hello from server');
+  socket.on('msg', function(data) {
+    console.log("received message: " + data);
+    socket.emit('msg', "server acknowledges following message: " + data);
+  });
+  socket.on('json', function(data) {
+    console.log("received JSON object:\n" + JSON.stringify(data));
+    socket.emit('json', data);
   });
 });
 
