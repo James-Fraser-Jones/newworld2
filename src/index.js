@@ -14,7 +14,7 @@ socket.on('disconnect', function(data) {
 });
 
 socket.on('json', function(data) {
-  console.log("received object:\n" + JSON.stringify(data));
+  console.log("received JSON object:\n" + JSON.stringify(data));
 });
 
 function attach(cb){
@@ -97,12 +97,15 @@ function PureBody(props){
 function PureRow(props){
   //make cells
   let cells = [];
-  for (let i = 0; i < props.row.length; i++){
-    if (props.isHeader){
+  if (props.isHeader){
+    for (let i = 0; i < props.row.length; i++){
       cells.push(<PureHeader key={i} headerName={props.row[i]}/>);
     }
-    else{
-      cells.push(<PureCell key={i} cellValue={props.row[i]}/>);
+  }
+  else{
+    cells.push(<PureCell key={0} editable={false} cellValue={props.row[0]}/>); //primary key cell
+    for (let i = 1; i < props.row.length; i++){
+      cells.push(<PureCell key={i} editable={true} cellValue={props.row[i]}/>);
     }
   }
 
@@ -114,7 +117,10 @@ function PureHeader(props){
 }
 
 function PureCell(props){
-  return(<td contentEditable suppressContentEditableWarning>{props.cellValue.toString()}</td>);
+  if (props.editable){
+    return(<td contentEditable suppressContentEditableWarning>{props.cellValue.toString()}</td>);
+  }
+  return(<td>{props.cellValue.toString()}</td>);
 }
 
 function App(props){

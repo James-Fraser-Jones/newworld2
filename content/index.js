@@ -22,7 +22,7 @@ socket.on('disconnect', function (data) {
 });
 
 socket.on('json', function (data) {
-  console.log("received object:\n" + JSON.stringify(data));
+  console.log("received JSON object:\n" + JSON.stringify(data));
 });
 
 function attach(cb) {
@@ -124,11 +124,14 @@ function PureBody(props) {
 function PureRow(props) {
   //make cells
   var cells = [];
-  for (var i = 0; i < props.row.length; i++) {
-    if (props.isHeader) {
+  if (props.isHeader) {
+    for (var i = 0; i < props.row.length; i++) {
       cells.push(React.createElement(PureHeader, { key: i, headerName: props.row[i] }));
-    } else {
-      cells.push(React.createElement(PureCell, { key: i, cellValue: props.row[i] }));
+    }
+  } else {
+    cells.push(React.createElement(PureCell, { key: 0, editable: false, cellValue: props.row[0] })); //primary key cell
+    for (var _i = 1; _i < props.row.length; _i++) {
+      cells.push(React.createElement(PureCell, { key: _i, editable: true, cellValue: props.row[_i] }));
     }
   }
 
@@ -148,9 +151,16 @@ function PureHeader(props) {
 }
 
 function PureCell(props) {
+  if (props.editable) {
+    return React.createElement(
+      'td',
+      { contentEditable: true, suppressContentEditableWarning: true },
+      props.cellValue.toString()
+    );
+  }
   return React.createElement(
     'td',
-    { contentEditable: true, suppressContentEditableWarning: true },
+    null,
     props.cellValue.toString()
   );
 }
