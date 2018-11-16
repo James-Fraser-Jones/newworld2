@@ -1,42 +1,36 @@
 'use strict';
 
-// //==============================================================================
-// //normal js stuff
-//
-// const chkConnect = document.getElementById('chkConnect');
-// const txtSend = document.getElementById('txtSend');
-// const btnSend = document.getElementById('btnSend');
-// const btnSendJSON = document.getElementById('btnSendJSON');
-//
-// const testJSON = [{name:"James",age:23,likesCherries:true},{name:"Barney",age:50,likesCherries:false}];
-//
-// //==============================================================================
-// //websocket stuff
-//
-// const socket = io('http://localhost:4200');
-//
-// socket.on('connect', function(data) {
-//   console.log("connected to server");
-//   txtSend.removeAttribute("disabled", "");
-//   btnSend.removeAttribute("disabled", "");
-//   btnSendJSON.removeAttribute("disabled", "");
-// });
-//
-// socket.on('disconnect', function(data) {
-//   console.log("disconnected from server");
-//   txtSend.setAttribute("disabled", "");
-//   btnSend.setAttribute("disabled", "");
-//   btnSendJSON.setAttribute("disabled", "");
-// });
-//
-// socket.on('msg', function(data) {
-//   console.log("received message: " + data);
-// });
-//
-// socket.on('json', function(data) {
-//   console.log("received object:\n" + JSON.stringify(data));
-// });
-//
+//==============================================================================
+//websocket stuff
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var socket = io('http://localhost:4200');
+
+socket.on('connect', function (data) {
+  console.log("connected to server");
+});
+
+socket.on('disconnect', function (data) {
+  console.log("disconnected from server");
+});
+
+socket.on('json', function (data) {
+  console.log("received object:\n" + JSON.stringify(data));
+});
+
+function attach(cb) {
+  socket.on('json', function (data) {
+    cb(data);
+  });
+}
+
 // function toggleConnection() {
 //   if (chkConnect.checked){
 //     socket.open();
@@ -45,22 +39,51 @@
 //     socket.close();
 //   }
 // }
-//
-// function sendMessage(){
-//   if (txtSend.value) {
-//     socket.emit('msg', txtSend.value);
-//   }
-//   txtSend.value = '';
-// }
-//
-// function sendJSON(){
-//   socket.emit('json', testJSON);
-// }
+
+function sendJSON() {
+  socket.emit('json', testJSON);
+}
 
 //==============================================================================
 //react stuff
 
-var exampleObject = [{ pk: 1, name: "James", age: 23, grapes: true }, { pk: 2, name: "Nathan", age: 24, grapes: false }, { pk: 4, name: "Edie", age: 22, grapes: true }];
+var DBTable = function (_React$Component) {
+  _inherits(DBTable, _React$Component);
+
+  function DBTable(props) {
+    _classCallCheck(this, DBTable);
+
+    var _this = _possibleConstructorReturn(this, (DBTable.__proto__ || Object.getPrototypeOf(DBTable)).call(this, props));
+
+    _this.state = _this.props;
+    attach(function (data) {
+      return _this.setState({ data: data });
+    });
+    return _this;
+  }
+
+  _createClass(DBTable, [{
+    key: 'render',
+    value: function render() {
+      if (this.state.data) {
+        var headerNames = Object.keys(this.state.data[0]);
+        var grid = this.state.data.map(function (x) {
+          return Object.values(x);
+        });
+
+        return React.createElement(
+          'table',
+          { className: 'table border border-dark' },
+          React.createElement(PureHead, { headerNames: headerNames }),
+          React.createElement(PureBody, { grid: grid })
+        );
+      }
+      return React.createElement('div', null);
+    }
+  }]);
+
+  return DBTable;
+}(React.Component);
 
 function PureTable(props) {
   var headerNames = Object.keys(props.grid[0]);
@@ -69,8 +92,8 @@ function PureTable(props) {
   });
 
   return React.createElement(
-    "table",
-    { className: "table" },
+    'table',
+    { className: 'table border border-dark' },
     React.createElement(PureHead, { headerNames: headerNames }),
     React.createElement(PureBody, { grid: grid })
   );
@@ -78,8 +101,8 @@ function PureTable(props) {
 
 function PureHead(props) {
   return React.createElement(
-    "thead",
-    { className: "thead-dark" },
+    'thead',
+    { className: 'thead-dark' },
     React.createElement(PureRow, { row: props.headerNames, isHeader: true })
   );
 }
@@ -92,7 +115,7 @@ function PureBody(props) {
   }
 
   return React.createElement(
-    "tbody",
+    'tbody',
     null,
     rows
   );
@@ -110,7 +133,7 @@ function PureRow(props) {
   }
 
   return React.createElement(
-    "tr",
+    'tr',
     null,
     cells
   );
@@ -118,15 +141,15 @@ function PureRow(props) {
 
 function PureHeader(props) {
   return React.createElement(
-    "th",
-    { scope: "col" },
+    'th',
+    { scope: 'col' },
     props.headerName.toString()
   );
 }
 
 function PureCell(props) {
   return React.createElement(
-    "td",
+    'td',
     { contentEditable: true, suppressContentEditableWarning: true },
     props.cellValue.toString()
   );
@@ -134,15 +157,15 @@ function PureCell(props) {
 
 function App(props) {
   return React.createElement(
-    "div",
-    { className: "container-fluid" },
+    'div',
+    { className: 'container-fluid mt-5' },
     React.createElement(
-      "div",
-      { className: "row justify-content-center" },
+      'div',
+      { className: 'row justify-content-center' },
       React.createElement(
-        "div",
-        { className: "col-4" },
-        React.createElement(PureTable, { grid: exampleObject })
+        'div',
+        { className: 'col-4' },
+        React.createElement(DBTable, null)
       )
     )
   );

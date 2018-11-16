@@ -1,42 +1,28 @@
 'use strict';
 
-// //==============================================================================
-// //normal js stuff
-//
-// const chkConnect = document.getElementById('chkConnect');
-// const txtSend = document.getElementById('txtSend');
-// const btnSend = document.getElementById('btnSend');
-// const btnSendJSON = document.getElementById('btnSendJSON');
-//
-// const testJSON = [{name:"James",age:23,likesCherries:true},{name:"Barney",age:50,likesCherries:false}];
-//
-// //==============================================================================
-// //websocket stuff
-//
-// const socket = io('http://localhost:4200');
-//
-// socket.on('connect', function(data) {
-//   console.log("connected to server");
-//   txtSend.removeAttribute("disabled", "");
-//   btnSend.removeAttribute("disabled", "");
-//   btnSendJSON.removeAttribute("disabled", "");
-// });
-//
-// socket.on('disconnect', function(data) {
-//   console.log("disconnected from server");
-//   txtSend.setAttribute("disabled", "");
-//   btnSend.setAttribute("disabled", "");
-//   btnSendJSON.setAttribute("disabled", "");
-// });
-//
-// socket.on('msg', function(data) {
-//   console.log("received message: " + data);
-// });
-//
-// socket.on('json', function(data) {
-//   console.log("received object:\n" + JSON.stringify(data));
-// });
-//
+//==============================================================================
+//websocket stuff
+
+const socket = io('http://localhost:4200');
+
+socket.on('connect', function(data) {
+  console.log("connected to server");
+});
+
+socket.on('disconnect', function(data) {
+  console.log("disconnected from server");
+});
+
+socket.on('json', function(data) {
+  console.log("received object:\n" + JSON.stringify(data));
+});
+
+function attach(cb){
+  socket.on('json', function(data) {
+    cb(data);
+  });
+}
+
 // function toggleConnection() {
 //   if (chkConnect.checked){
 //     socket.open();
@@ -45,31 +31,43 @@
 //     socket.close();
 //   }
 // }
-//
-// function sendMessage(){
-//   if (txtSend.value) {
-//     socket.emit('msg', txtSend.value);
-//   }
-//   txtSend.value = '';
-// }
-//
-// function sendJSON(){
-//   socket.emit('json', testJSON);
-// }
+
+function sendJSON(){
+  socket.emit('json', testJSON);
+}
 
 //==============================================================================
 //react stuff
 
-const exampleObject = [{pk: 1, name:"James", age:23, grapes:true},
-                       {pk: 2, name:"Nathan", age:24, grapes:false},
-                       {pk: 4, name:"Edie", age:22, grapes:true}];
+class DBTable extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = this.props;
+    attach((data) => this.setState({data}));
+  }
+
+  render(){
+    if (this.state.data){
+      let headerNames = Object.keys(this.state.data[0]);
+      let grid = this.state.data.map(x => Object.values(x));
+
+      return(
+        <table className="table border border-dark">
+          <PureHead headerNames={headerNames}/>
+          <PureBody grid={grid}/>
+        </table>
+      );
+    }
+    return(<div/>)
+  }
+}
 
 function PureTable(props){
   let headerNames = Object.keys(props.grid[0]);
   let grid = props.grid.map(x => Object.values(x));
 
   return(
-    <table className="table">
+    <table className="table border border-dark">
       <PureHead headerNames={headerNames}/>
       <PureBody grid={grid}/>
     </table>
@@ -121,10 +119,10 @@ function PureCell(props){
 
 function App(props){
   return(
-    <div className="container-fluid">
+    <div className="container-fluid mt-5">
       <div className="row justify-content-center">
         <div className="col-4">
-          <PureTable grid={exampleObject}/>
+          <DBTable/>
         </div>
       </div>
     </div>
