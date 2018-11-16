@@ -1,60 +1,61 @@
 'use strict';
 
-//==============================================================================
-//normal js stuff
-
-var chkConnect = document.getElementById('chkConnect');
-var txtSend = document.getElementById('txtSend');
-var btnSend = document.getElementById('btnSend');
-var btnSendJSON = document.getElementById('btnSendJSON');
-
-var testJSON = [{ name: "James", age: 23, likesCherries: true }, { name: "Barney", age: 50, likesCherries: false }];
-
-//==============================================================================
-//websocket stuff
-
-var socket = io('http://localhost:4200');
-
-socket.on('connect', function (data) {
-  console.log("connected to server");
-  txtSend.removeAttribute("disabled", "");
-  btnSend.removeAttribute("disabled", "");
-  btnSendJSON.removeAttribute("disabled", "");
-});
-
-socket.on('disconnect', function (data) {
-  console.log("disconnected from server");
-  txtSend.setAttribute("disabled", "");
-  btnSend.setAttribute("disabled", "");
-  btnSendJSON.setAttribute("disabled", "");
-});
-
-socket.on('msg', function (data) {
-  console.log("received message: " + data);
-});
-
-socket.on('json', function (data) {
-  console.log("received object:\n" + JSON.stringify(data));
-});
-
-function toggleConnection() {
-  if (chkConnect.checked) {
-    socket.open();
-  } else {
-    socket.close();
-  }
-}
-
-function sendMessage() {
-  if (txtSend.value) {
-    socket.emit('msg', txtSend.value);
-  }
-  txtSend.value = '';
-}
-
-function sendJSON() {
-  socket.emit('json', testJSON);
-}
+// //==============================================================================
+// //normal js stuff
+//
+// const chkConnect = document.getElementById('chkConnect');
+// const txtSend = document.getElementById('txtSend');
+// const btnSend = document.getElementById('btnSend');
+// const btnSendJSON = document.getElementById('btnSendJSON');
+//
+// const testJSON = [{name:"James",age:23,likesCherries:true},{name:"Barney",age:50,likesCherries:false}];
+//
+// //==============================================================================
+// //websocket stuff
+//
+// const socket = io('http://localhost:4200');
+//
+// socket.on('connect', function(data) {
+//   console.log("connected to server");
+//   txtSend.removeAttribute("disabled", "");
+//   btnSend.removeAttribute("disabled", "");
+//   btnSendJSON.removeAttribute("disabled", "");
+// });
+//
+// socket.on('disconnect', function(data) {
+//   console.log("disconnected from server");
+//   txtSend.setAttribute("disabled", "");
+//   btnSend.setAttribute("disabled", "");
+//   btnSendJSON.setAttribute("disabled", "");
+// });
+//
+// socket.on('msg', function(data) {
+//   console.log("received message: " + data);
+// });
+//
+// socket.on('json', function(data) {
+//   console.log("received object:\n" + JSON.stringify(data));
+// });
+//
+// function toggleConnection() {
+//   if (chkConnect.checked){
+//     socket.open();
+//   }
+//   else{
+//     socket.close();
+//   }
+// }
+//
+// function sendMessage(){
+//   if (txtSend.value) {
+//     socket.emit('msg', txtSend.value);
+//   }
+//   txtSend.value = '';
+// }
+//
+// function sendJSON(){
+//   socket.emit('json', testJSON);
+// }
 
 //==============================================================================
 //react stuff
@@ -68,8 +69,8 @@ function PureTable(props) {
   });
 
   return React.createElement(
-    'div',
-    { className: 'divTable minimalistBlack' },
+    "table",
+    { className: "table" },
     React.createElement(PureHead, { headerNames: headerNames }),
     React.createElement(PureBody, { grid: grid })
   );
@@ -77,8 +78,8 @@ function PureTable(props) {
 
 function PureHead(props) {
   return React.createElement(
-    'div',
-    { className: 'divTableHeading' },
+    "thead",
+    { className: "thead-dark" },
     React.createElement(PureRow, { row: props.headerNames, isHeader: true })
   );
 }
@@ -91,8 +92,8 @@ function PureBody(props) {
   }
 
   return React.createElement(
-    'div',
-    { className: 'divTableBody' },
+    "tbody",
+    null,
     rows
   );
 }
@@ -109,28 +110,44 @@ function PureRow(props) {
   }
 
   return React.createElement(
-    'div',
-    { className: 'divTableRow' },
+    "tr",
+    null,
     cells
   );
 }
 
 function PureHeader(props) {
   return React.createElement(
-    'div',
-    { className: 'divTableHead' },
+    "th",
+    { scope: "col" },
     props.headerName.toString()
   );
 }
 
 function PureCell(props) {
   return React.createElement(
-    'div',
-    { className: 'divTableCell', contentEditable: true, suppressContentEditableWarning: true },
+    "td",
+    { contentEditable: true, suppressContentEditableWarning: true },
     props.cellValue.toString()
+  );
+}
+
+function App(props) {
+  return React.createElement(
+    "div",
+    { className: "container-fluid" },
+    React.createElement(
+      "div",
+      { className: "row justify-content-center" },
+      React.createElement(
+        "div",
+        { className: "col-4" },
+        React.createElement(PureTable, { grid: exampleObject })
+      )
+    )
   );
 }
 
 //render the above app in the react entry point in the html file
 var domContainer = document.querySelector('#newworld_entry');
-ReactDOM.render(React.createElement(PureTable, { grid: exampleObject }), domContainer);
+ReactDOM.render(React.createElement(App, null), domContainer);

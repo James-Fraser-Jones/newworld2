@@ -1,61 +1,61 @@
 'use strict';
 
-//==============================================================================
-//normal js stuff
-
-const chkConnect = document.getElementById('chkConnect');
-const txtSend = document.getElementById('txtSend');
-const btnSend = document.getElementById('btnSend');
-const btnSendJSON = document.getElementById('btnSendJSON');
-
-const testJSON = [{name:"James",age:23,likesCherries:true},{name:"Barney",age:50,likesCherries:false}];
-
-//==============================================================================
-//websocket stuff
-
-const socket = io('http://localhost:4200');
-
-socket.on('connect', function(data) {
-  console.log("connected to server");
-  txtSend.removeAttribute("disabled", "");
-  btnSend.removeAttribute("disabled", "");
-  btnSendJSON.removeAttribute("disabled", "");
-});
-
-socket.on('disconnect', function(data) {
-  console.log("disconnected from server");
-  txtSend.setAttribute("disabled", "");
-  btnSend.setAttribute("disabled", "");
-  btnSendJSON.setAttribute("disabled", "");
-});
-
-socket.on('msg', function(data) {
-  console.log("received message: " + data);
-});
-
-socket.on('json', function(data) {
-  console.log("received object:\n" + JSON.stringify(data));
-});
-
-function toggleConnection() {
-  if (chkConnect.checked){
-    socket.open();
-  }
-  else{
-    socket.close();
-  }
-}
-
-function sendMessage(){
-  if (txtSend.value) {
-    socket.emit('msg', txtSend.value);
-  }
-  txtSend.value = '';
-}
-
-function sendJSON(){
-  socket.emit('json', testJSON);
-}
+// //==============================================================================
+// //normal js stuff
+//
+// const chkConnect = document.getElementById('chkConnect');
+// const txtSend = document.getElementById('txtSend');
+// const btnSend = document.getElementById('btnSend');
+// const btnSendJSON = document.getElementById('btnSendJSON');
+//
+// const testJSON = [{name:"James",age:23,likesCherries:true},{name:"Barney",age:50,likesCherries:false}];
+//
+// //==============================================================================
+// //websocket stuff
+//
+// const socket = io('http://localhost:4200');
+//
+// socket.on('connect', function(data) {
+//   console.log("connected to server");
+//   txtSend.removeAttribute("disabled", "");
+//   btnSend.removeAttribute("disabled", "");
+//   btnSendJSON.removeAttribute("disabled", "");
+// });
+//
+// socket.on('disconnect', function(data) {
+//   console.log("disconnected from server");
+//   txtSend.setAttribute("disabled", "");
+//   btnSend.setAttribute("disabled", "");
+//   btnSendJSON.setAttribute("disabled", "");
+// });
+//
+// socket.on('msg', function(data) {
+//   console.log("received message: " + data);
+// });
+//
+// socket.on('json', function(data) {
+//   console.log("received object:\n" + JSON.stringify(data));
+// });
+//
+// function toggleConnection() {
+//   if (chkConnect.checked){
+//     socket.open();
+//   }
+//   else{
+//     socket.close();
+//   }
+// }
+//
+// function sendMessage(){
+//   if (txtSend.value) {
+//     socket.emit('msg', txtSend.value);
+//   }
+//   txtSend.value = '';
+// }
+//
+// function sendJSON(){
+//   socket.emit('json', testJSON);
+// }
 
 //==============================================================================
 //react stuff
@@ -69,18 +69,18 @@ function PureTable(props){
   let grid = props.grid.map(x => Object.values(x));
 
   return(
-    <div className="divTable minimalistBlack">
+    <table className="table">
       <PureHead headerNames={headerNames}/>
       <PureBody grid={grid}/>
-    </div>
+    </table>
   );
 }
 
 function PureHead(props){
   return(
-    <div className="divTableHeading">
+    <thead className="thead-dark">
       <PureRow row={props.headerNames} isHeader={true}/>
-    </div>
+    </thead>
   );
 }
 
@@ -92,7 +92,7 @@ function PureBody(props){
   }
 
   return(
-    <div className="divTableBody">{rows}</div>
+    <tbody>{rows}</tbody>
   );
 }
 
@@ -108,17 +108,29 @@ function PureRow(props){
     }
   }
 
-  return(<div className="divTableRow">{cells}</div>);
+  return(<tr>{cells}</tr>);
 }
 
 function PureHeader(props){
-  return(<div className="divTableHead">{props.headerName.toString()}</div>)
+  return(<th scope="col">{props.headerName.toString()}</th>);
 }
 
 function PureCell(props){
-  return(<div className="divTableCell" contentEditable suppressContentEditableWarning>{props.cellValue.toString()}</div>)
+  return(<td contentEditable suppressContentEditableWarning>{props.cellValue.toString()}</td>);
+}
+
+function App(props){
+  return(
+    <div className="container-fluid">
+      <div className="row justify-content-center">
+        <div className="col-4">
+          <PureTable grid={exampleObject}/>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 //render the above app in the react entry point in the html file
 var domContainer = document.querySelector('#newworld_entry');
-ReactDOM.render(<PureTable grid={exampleObject}/>, domContainer);
+ReactDOM.render(<App/>, domContainer);

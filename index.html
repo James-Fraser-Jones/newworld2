@@ -1,19 +1,23 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <link rel="stylesheet" href="/content/index.css">
+        <!-- <link rel="stylesheet" href="/content/index.css"> -->
+        <title>New World</title>
+
+        <!-- bootstrap meta tags and stylesheet -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="/content/bootstrap_library/bootstrap.min.css">
     </head>
     <body>
-        <h1>New World!</h1>
-
-        <!-- websocket testing ui -->
+        <!-- <h1>New World!</h1>
         <input id="chkConnect" type="checkbox" onclick='toggleConnection();' checked>Connect</input>
         <br/>
         <input id="txtSend"></input>
         <button id="btnSend" onclick='sendMessage();'>Send</button>
         <br/><br/>
         <button id="btnSendJSON" onclick='sendJSON();'>Send JSON</button>
-        <br/><br/>
+        <br/><br/> -->
 
         <!-- react app entry point -->
         <div id="newworld_entry"></div>
@@ -21,7 +25,12 @@
         <!-- socket.io script -->
         <script src="/socket.io/socket.io.js"></script>
 
-        <!-- react scripts -->
+        <!-- bootstrap scripts -->
+        <script src="/content/bootstrap_library/jquery-3.3.1.slim.min.js"></script>
+        <script src="/content/bootstrap_library/popper.min.js"></script>
+        <script src="/content/bootstrap_library/bootstrap.min.js"></script>
+
+        <!-- react dev and production scripts -->
         <script src="/content/react_library/react_16.5.2/react.development.js"></script>
         <script src="/content/react_library/react_16.5.2/react-dom.development.js"></script>
         <!-- <script src="/content/react_library/react_16.5.2/react.production.min.js"></script>
@@ -29,9 +38,8 @@
 
         <!-- newworld app script -->
         <script src="/content/index.js"></script>
-
-        <!-- run this command before editing src/index.js
-        npx babel --watch src --out-dir content --presets react-app/prod
-        -->
     </body>
-</html>
+
+<!-- run this command before editing "src/index.js":
+npx babel --watch src --out-dir content --presets react-app/prod
+-->
