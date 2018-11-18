@@ -8,11 +8,11 @@ const db = require('better-sqlite3')('content/newworld.db');
 
 const port = 4200;
 
-//app.use(express.static(__dirname + '/node_modules'));
+app.use('/node_modules', express.static(__dirname + '/node_modules'));
 app.use('/content', express.static(__dirname + '/content'));
 
 app.get('/', function(req, res, next) {
-    res.sendFile(__dirname + '/index.html');
+    res.sendFile(__dirname + '/index2.html');
 });
 
 io.on('connection', function(socket){
