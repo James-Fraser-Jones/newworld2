@@ -18,16 +18,15 @@ socket.on('disconnect', (data) => {
   console.log("disconnected from server");
 });
 
-socket.on('initialize', (data) => {
-  createTable(data);
-});
+socket.on('initialize', createTable);
 
-socket.on('update', (changes) => {
-  updateTable(changes);
-});
+socket.on('toClient', recieveUpdate);
 
 //==============================================================================
 //Table creation and updation
+
+//example update:
+//recieveUpdate([{tableName:"Customer", pkID:15, fieldName:"FirstName", value:"Freddy"}])
 
 function createTable(data){
   hot = new Handsontable(container, {
@@ -46,11 +45,9 @@ function sendUpdate(sheetArrs, source){
   if ((source !== "newworld") && sheetArrs){
     let dbObjs = sheetArrs.map(aSheetToDB);
     console.log("dbObjs = " + JSON.stringify(dbObjs));
+    socket.emit('toServer', dbObjs);
   }
 }
-
-//example update:
-//recieveUpdate([{tableName:"Customer", pkID:15, fieldName:"FirstName", value:"Freddy"}])
 
 function recieveUpdate(dbObjs){
   if (dbObjs){
