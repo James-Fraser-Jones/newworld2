@@ -4,7 +4,7 @@ const express = require('express');
 const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
-const db = require('better-sqlite3')('content/newworld.db');
+const db = require('better-sqlite3')('content/database/chinook.db');
 
 const port = 4200;
 
@@ -21,8 +21,8 @@ io.on('connection', function(socket){
     console.log('user disconnected');
   });
 
-  const tableData = db.prepare('SELECT * FROM Item').all();
-  socket.emit('json', tableData);
+  const tableData = db.prepare('SELECT CustomerId AS CustomerID, FirstName AS Customer_FirstName, Address AS Customer_Address FROM customers').all();
+  socket.emit('initialize', tableData);
 
   socket.on('json', function(data) {
     console.log("received JSON object:\n" + JSON.stringify(data));
